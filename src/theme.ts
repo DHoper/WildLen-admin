@@ -14,10 +14,10 @@ const theme = createTheme({
     },
     palette: {
         primary: {
-            main: '#1976d2', // 主題色
+            main: '#4338CA',
         },
         secondary: {
-            main: '#f50057', // 次要色
+            main: '#3B82F6',
         },
     },
 });
