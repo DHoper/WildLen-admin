@@ -12,7 +12,6 @@ import {
   InputLabel,
   Box,
   Grid,
-  Stack,
   Dialog,
   DialogActions,
   DialogContent,
@@ -26,7 +25,6 @@ import {
 import { TabPanel, TabList, TabContext } from "@mui/lab";
 import AccountOutline from "mdi-material-ui/AccountOutline";
 import LockOpenOutline from "mdi-material-ui/LockOpenOutline";
-import InformationOutline from "mdi-material-ui/InformationOutline";
 import { KeyboardBackspace as KeyboardBackspaceIcon } from "@mui/icons-material";
 import {
   getUserById,
@@ -129,6 +127,7 @@ const EditUserPage = ({ params }: { params: { id: string } }) => {
     try {
       await deleteUser(Number(id));
       alert("用戶已成功刪除!");
+      router.back();
       router.push("/userManagement");
     } catch (error) {
       console.error("刪除用戶失敗:", error);

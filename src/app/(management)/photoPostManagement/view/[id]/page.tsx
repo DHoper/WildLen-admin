@@ -10,12 +10,6 @@ import {
   Avatar,
   Divider,
   Tab,
-  Tabs,
-  Paper,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Dialog,
   DialogActions,
   DialogContent,
@@ -27,7 +21,6 @@ import Link from "next/link";
 import {
   KeyboardBackspace,
   Delete,
-  LocationOn,
   Visibility,
   ThumbUp,
   Comment,
@@ -37,6 +30,7 @@ import { getPhotoPostById, deletePhotoPost } from "@/api/management/photoPost";
 import { format } from "date-fns";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const PhotoPostViewPage = ({ params }: { params: { id: string } }) => {
   const [photoPost, setPhotoPost] = useState<PhotoPost | null>(null);
@@ -46,6 +40,7 @@ const PhotoPostViewPage = ({ params }: { params: { id: string } }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
   const id = params.id;
+  const router = useRouter()
 
   useEffect(() => {
     if (id) {
@@ -55,8 +50,7 @@ const PhotoPostViewPage = ({ params }: { params: { id: string } }) => {
           setLoading(false);
         })
         .catch((error) => {
-          console.error("Error fetching photo post:", error);
-          setError("Error fetching photo post");
+          setError("加載貼文時發生錯誤");
           setLoading(false);
         });
     }
@@ -72,10 +66,10 @@ const PhotoPostViewPage = ({ params }: { params: { id: string } }) => {
     deletePhotoPost(Number(id))
       .then(() => {
         setDeleteDialogOpen(false);
-        // Redirect or update UI after deletion
+        router.back()
       })
       .catch((error) => {
-        console.error("Error deleting photo post:", error);
+        console.error("刪除貼文時發生錯誤:", error);
         setDeleteDialogOpen(false);
       });
   };

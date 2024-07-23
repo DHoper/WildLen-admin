@@ -112,7 +112,7 @@ const Editor: React.FC<EditorProps> = ({ mode, article }) => {
 
         router.push("/articleManagement");
       } catch (error) {
-        console.error("Error creating/updating article:", error);
+        console.error("無法創建/更新 article:", error);
       }
     }
   };
@@ -137,7 +137,7 @@ const Editor: React.FC<EditorProps> = ({ mode, article }) => {
         await updateArticle(article.id, article);
       }
     } catch (error) {
-      console.error("Error creating/updating article:", error);
+      console.error("無法創建/更新 article:", error);
     }
   };
 

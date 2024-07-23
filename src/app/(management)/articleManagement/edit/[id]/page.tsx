@@ -8,10 +8,12 @@ import { Article } from "@/types/Article";
 import { Button, CircularProgress, IconButton } from "@mui/material";
 import { Delete, KeyboardBackspace } from "@mui/icons-material";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 
 const ArticleEditPage = ({ params }: { params: { id: string } }) => {
   const [article, setArticle] = useState<Article | null>(null);
   const id = params.id;
+  const router = useRouter();
 
   const Editor = useMemo(() => {
     return dynamic(() => import("@/components/editor/Editor"), {
@@ -28,6 +30,7 @@ const ArticleEditPage = ({ params }: { params: { id: string } }) => {
   const handleDeleteArticle = async (id: number) => {
     try {
       await deleteArticle(id);
+      router.back();
     } catch (error) {
       console.error(`刪除文章時發生錯誤 ${id}:`, error);
     }
@@ -37,7 +40,7 @@ const ArticleEditPage = ({ params }: { params: { id: string } }) => {
     if (id) {
       getArticle(Number(id))
         .then((response) => setArticle(response.article))
-        .catch((error) => console.error("Error fetching article:", error));
+        .catch((error) => console.error("無法加載 article:", error));
     }
   }, [id]);
 

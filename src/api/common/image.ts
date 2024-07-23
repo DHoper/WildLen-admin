@@ -25,7 +25,7 @@ export const uploadImage = async (dir: string, file: File): Promise<ImageUploadR
 
         return response.data;
     } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error('上傳圖片時發生錯誤:', error);
         throw error;
     }
 };
@@ -49,7 +49,7 @@ export const deleteImage = async (identifier: string): Promise<AxiosResponse<voi
 
         return response;
     } catch (error) {
-        console.error('Error deleting image:', error);
+        console.error('刪除圖片時發生錯誤:', error);
         throw error;
     }
 };

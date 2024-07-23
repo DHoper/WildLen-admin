@@ -14,7 +14,7 @@ export const createArticle = async (
   try {
     return await apiClient.post<Article>(ApiConfig.index, data);
   } catch (error) {
-    console.error("Error creating article:", error);
+    console.error("創建文章時發生錯誤:", error);
     throw error;
   }
 };
@@ -27,7 +27,7 @@ export const updateArticle = async (
     // Assuming data includes images with publicId after upload
     return await apiClient.put<Article>(ApiConfig.byId(id), data);
   } catch (error) {
-    console.error("Error updating article:", error);
+    console.error("更新文章時發生錯誤:", error);
     throw error;
   }
 };
@@ -38,7 +38,7 @@ export const deleteArticle = async (
   try {
     return await apiClient.delete<void>(ApiConfig.byId(id));
   } catch (error) {
-    console.error("Error deleting article:", error);
+    console.error("刪除文章時發生錯誤:", error);
     throw error;
   }
 };
@@ -48,7 +48,7 @@ export const getAllArticle = async (): Promise<Article[]> => {
     const response = await apiClient.get(ApiConfig.index);
     return response.data.articles;
   } catch (error) {
-    console.error("Error fetching all articles:", error);
+    console.error("加載所有文章時發生錯誤:", error);
     throw error;
   }
 };
@@ -58,7 +58,7 @@ export const getArticle = async (id: number) => {
     const responseData = await apiClient.get(ApiConfig.byId(id));
     return responseData.data;
   } catch (error) {
-    console.error("Error fetching article:", error);
+    console.error("加載文章時發生錯誤:", error);
     throw error;
   }
 };

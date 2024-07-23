@@ -45,6 +45,7 @@ const CommunityPostViewPage = ({ params }: { params: { id: string } }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
   const id = params.id;
+  const router = useRouter();
 
   useEffect(() => {
     if (id) {
@@ -54,8 +55,8 @@ const CommunityPostViewPage = ({ params }: { params: { id: string } }) => {
           setLoading(false);
         })
         .catch((error) => {
-          console.error("Error fetching community post:", error);
-          setError("Error fetching community post");
+          console.error("無法加載 community post:", error);
+          setError("無法加載 community post");
           setLoading(false);
         });
     }
@@ -69,7 +70,7 @@ const CommunityPostViewPage = ({ params }: { params: { id: string } }) => {
     deleteCommunityPost(Number(id))
       .then(() => {
         setDeleteDialogOpen(false);
-        // Redirect or update UI after deletion
+        router.back();
       })
       .catch((error) => {
         console.error("Error deleting community post:", error);
