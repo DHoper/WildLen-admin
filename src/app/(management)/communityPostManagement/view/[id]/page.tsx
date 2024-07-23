@@ -5,7 +5,6 @@ import {
   Typography,
   Button,
   Box,
-  Grid,
   CircularProgress,
   Avatar,
   Divider,
@@ -32,8 +31,8 @@ import {
 } from "@/api/management/communityPost";
 import { format } from "date-fns";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import Image from "next/image";
 import { getConvertedHtml } from "@/utils/convertor";
+import { useRouter } from "next/navigation";
 
 const CommunityPostViewPage = ({ params }: { params: { id: string } }) => {
   const [communityPost, setCommunityPost] = useState<CommunityPost | null>(
