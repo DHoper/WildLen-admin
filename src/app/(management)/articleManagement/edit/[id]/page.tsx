@@ -1,75 +1,80 @@
-// pages/edit/[id].tsx
-
-import { GetServerSideProps, NextPage } from "next";
-import Editor from "@/components/editor/Editor";
-import { Article } from "@/types/Article";
-import { ArrowLongLeftIcon } from "@heroicons/react/24/outline";
-import { Card, Typography } from "@mui/material";
+"use client";
+import Card from "@mui/material/Card";
+import Typography from "@mui/material/Typography";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-
-interface EditArticlePageProps {
-  article?: Article; // 文章類型，根據你的定義調整
-}
+import { useEffect, useMemo, useState } from "react";
+import { deleteArticle, getArticle } from "@/api/management/article";
+import { Article } from "@/types/Article";
+import { Button, CircularProgress, IconButton } from "@mui/material";
+import { Delete, KeyboardBackspace } from "@mui/icons-material";
+import dynamic from "next/dynamic";
 
 const ArticleEditPage = ({ params }: { params: { id: string } }) => {
-  const [article, setArticle] = useState<Article>();
+  const [article, setArticle] = useState<Article | null>(null);
+  const id = params.id;
 
-  useEffect(() => {
-    
+  const Editor = useMemo(() => {
+    return dynamic(() => import("@/components/editor/Editor"), {
+      loading: () => (
+        <div className="my-4 flex w-full items-center justify-center">
+          <CircularProgress />
+        </div>
+      ),
+
+      ssr: false,
+    });
   }, []);
 
+  const handleDeleteArticle = async (id: number) => {
+    try {
+      await deleteArticle(id);
+    } catch (error) {
+      console.error(`刪除文章時發生錯誤 ${id}:`, error);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      getArticle(Number(id))
+        .then((response) => setArticle(response.article))
+        .catch((error) => console.error("Error fetching article:", error));
+    }
+  }, [id]);
+
   return (
-    <div className="w-full min-h-screen pt-4 pb-8 px-8 text-black">
+    <div className="min-h-screen w-full px-8 pb-8 pt-4 text-black">
       <Link href={"/articleManagement"}>
-        <ArrowLongLeftIcon className="h-8 w-8 mb-4" />
+        <Button
+          variant="contained"
+          startIcon={<KeyboardBackspace fontSize="medium" />}
+          sx={{ marginBottom: 2 }}
+        >
+          返回
+        </Button>
       </Link>
-      <Card className="w-[90%] mx-auto p-8 bg-transparent">
+
+      <Card className="mx-auto w-full max-w-4xl bg-transparent p-8 pt-2">
+        <IconButton
+          className="-mr-4 ml-auto block p-0"
+          color="error"
+          onClick={() => handleDeleteArticle(Number(id))}
+        >
+          <Delete />
+        </IconButton>
         <Typography
-          className="w-fit mx-auto text-2xl font-semibold"
+          className="mx-auto w-fit text-2xl font-semibold"
           gutterBottom
         >
-          新增文章
+          編輯文章
         </Typography>
-        <Editor mode="edit" article={article} />
+        {article ? (
+          <Editor mode="edit" article={article} />
+        ) : (
+          <Typography className="mt-4 text-center">載入中...</Typography>
+        )}
       </Card>
     </div>
   );
 };
-
-{
-  /* export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-    const { id } = params; // 從路由參數獲取文章 ID
-
-    // 模擬從 API 獲取文章數據，這裡可以替換為實際的數據獲取邏輯
-    // 例如使用 fetch 或者調用後端 API
-    const response = await fetch(`https://api.example.com/articles/${id}`);
-    const data = await response.json();
-
-    if (!data) {
-        return {
-            notFound: true,
-        };
-    }
-
-    const article: Article = {
-        id: data.id,
-        title: data.title,
-        subTitle: data.subTitle,
-        createdAt: data.createdAt,
-        views: data.views,
-        likes: data.likes,
-        content: data.content,
-        topicTags: data.topicTags,
-        coverImage: data.coverImage,
-    };
-
-    return {
-        props: {
-            article,
-        },
-    };
-}; */
-}
 
 export default ArticleEditPage;

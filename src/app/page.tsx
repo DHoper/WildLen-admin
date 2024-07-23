@@ -2,5 +2,5 @@
 
 
 export default function AboutPage() {
-  return <div className="w-screen h-screen"></div>;
+  return <div className="h-screen w-screen"></div>;
 }

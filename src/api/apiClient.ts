@@ -1,5 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
+
+console.log(process.env.API_URL);
 
 export const apiClient = axios.create({
-    baseURL: "http://192.168.110.175:3000/"
+  baseURL: process.env.API_URL,
 });

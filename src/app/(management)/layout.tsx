@@ -7,11 +7,11 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative flex bg-indigo-100/25 dark:bg-white w-screen h-screen">
+    <div className="relative flex h-screen w-screen bg-indigo-100/25 dark:bg-white">
       <SideMenu />
-      <div className="flex-1 h-full flex flex-col overflow-hidden">
+      <div className="flex h-full flex-1 flex-col overflow-hidden">
         <MainHeader />
-        <div className="flex-1 overflow-auto scrollbar-hide">{children}</div>
+        <div className="scrollbar-hide flex-1 overflow-auto">{children}</div>
       </div>
     </div>
   );

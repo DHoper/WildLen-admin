@@ -17,7 +17,7 @@ import EditorPreViewDialog from "./EditorPreViewDialog";
 import { createArticle, updateArticle } from "@/api/management/article";
 import { uploadImage } from "@/api/common/image";
 import { Article, CreateArticleData } from "@/types/Article";
-import { useRouter } from "next/navigation"; // 注意這裡使用了正確的 router import
+import { useRouter } from "next/navigation";
 import { topicTags } from "@/fakeData/topicTags";
 
 const allTags = Object.values(topicTags).reduce<string[]>((acc, category) => {
@@ -41,60 +41,9 @@ const Editor: React.FC<EditorProps> = ({ mode, article }) => {
     null
   );
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  const coverImageRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-
-  useEffect(() => {
-    if (editorRef.current && !isMounted.current) {
-      const quill = new Quill(editorRef.current, {
-        placeholder: "",
-        theme: "snow",
-        modules: {
-          toolbar: [
-            [{ header: [1, 2, 3, false] }],
-            ["bold", "italic", "underline"],
-            ["link", "image"],
-            [{ list: "ordered" }, { list: "bullet" }],
-            ["clean"],
-          ],
-        },
-      });
-
-      const toolbar = editorRef.current.previousSibling as HTMLElement | null;
-      if (toolbar) {
-        toolbar.style.borderTopLeftRadius = "4px";
-        toolbar.style.borderTopRightRadius = "4px";
-        toolbar.style.marginTop = "16px";
-      }
-
-      quill.on("text-change", () => {
-        // 根據需要使用 quill.root.innerHTML 或 quill.getContents()
-      });
-
-      setQuillInstance(quill);
-      isMounted.current = true;
-    }
-
-    return () => {
-      if (quillInstance) {
-        quillInstance.off("text-change");
-        setQuillInstance(null);
-      }
-    };
-  }, [quillInstance]);
-
-  useEffect(() => {
-    if (article) {
-      setTitle(article.title);
-      setSubTitle(article.subTitle);
-      setSelectedTags(article.topicTags);
-      setCoverImage(article.coverImage);
-      setPreviewCoverImage(article.coverImage);
-
-      if (quillInstance) {
-        quillInstance.root.innerHTML = article.content;
-      }
-    }
-  }, [article, quillInstance]);
 
   const handleTagChange = (event: React.ChangeEvent<{}>, value: string[]) => {
     setSelectedTags(value);
@@ -124,21 +73,21 @@ const Editor: React.FC<EditorProps> = ({ mode, article }) => {
         let finalCoverImage = coverImage;
         let newImageIds: number[] = [];
 
-        // Upload new cover image if it's changed
         if (previewCoverImage !== coverImage) {
           const file = dataURLtoFile(previewCoverImage);
+          if (!file) return;
           const uploadResponse = await uploadImage("article", file);
           finalCoverImage = uploadResponse[0].url;
           newImageIds.push(uploadResponse[0].id);
         }
 
-        // Process images in Delta format
         const deltaOps = delta.ops;
         for (const op of deltaOps) {
           if (op.insert && typeof op.insert === "object" && op.insert.image) {
+            const imageBase64 = op.insert.image as string;
+            const imageFile = dataURLtoFile(imageBase64);
+            if (!imageFile) continue;
 
-            const imageUrl = op.insert.image as string;
-            const imageFile = dataURLtoFile(imageUrl);
             const uploadResponse = await uploadImage("article", imageFile);
             op.insert = {
               image: uploadResponse[0].url,
@@ -192,6 +141,57 @@ const Editor: React.FC<EditorProps> = ({ mode, article }) => {
     }
   };
 
+  useEffect(() => {
+    if (editorRef.current && !isMounted.current) {
+      const quill = new Quill(editorRef.current, {
+        placeholder: "",
+        theme: "snow",
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, 3, false] }],
+            ["bold", "italic", "underline"],
+            ["link", "image"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            ["clean"],
+          ],
+        },
+      });
+
+      const toolbar = editorRef.current.previousSibling as HTMLElement | null;
+      if (toolbar) {
+        toolbar.style.borderTopLeftRadius = "4px";
+        toolbar.style.borderTopRightRadius = "4px";
+        toolbar.style.marginTop = "16px";
+      }
+
+      setQuillInstance(quill);
+      isMounted.current = true;
+    }
+
+    return () => {
+      if (quillInstance) {
+        quillInstance.off("text-change");
+        setQuillInstance(null);
+      }
+    };
+  }, [quillInstance]);
+
+  useEffect(() => {
+    if (article) {
+      setTitle(article.title);
+      setSubTitle(article.subTitle);
+      setSelectedTags(article.topicTags);
+      setCoverImage(article.coverImage);
+      setPreviewCoverImage(article.coverImage);
+
+      if (quillInstance) {
+        if (mode === "edit") {
+          quillInstance.setContents(article.content);
+        }
+      }
+    }
+  }, [article, mode, quillInstance]);
+
   return (
     <Container maxWidth="md">
       <Box>
@@ -232,21 +232,19 @@ const Editor: React.FC<EditorProps> = ({ mode, article }) => {
           {previewCoverImage ? (
             <Box
               position="relative"
-              className="flex justify-center items-center border-2 border-dashed border-[#0000003b] rounded-md"
+              className="flex items-center justify-center rounded-md border-2 border-dashed border-[#0000003b]"
             >
               <Image
                 src={previewCoverImage}
                 alt="封面"
                 width={160}
                 height={90}
-                className="w-full aspect-video object-cover"
+                className="aspect-video w-full object-cover"
               />
-              <div className="absolute top-4 right-4 flex gap-4">
+              <div className="absolute right-4 top-4 flex gap-4">
                 <IconButton
                   aria-label="更改圖片"
-                  onClick={() =>
-                    document.getElementById("cover-image-input")?.click()
-                  }
+                  onClick={() => coverImageRef.current?.click()}
                   sx={{
                     backgroundColor: "rgba(255, 255, 255, 0.7)",
                   }}
@@ -266,13 +264,11 @@ const Editor: React.FC<EditorProps> = ({ mode, article }) => {
             </Box>
           ) : (
             <Box
-              onClick={() =>
-                document.getElementById("cover-image-input")?.click()
-              }
-              className="w-full aspect-video border border-dashed border-[#0000003b] rounded-md flex items-center justify-center cursor-pointer relative"
+              onClick={() => coverImageRef.current?.click()}
+              className="relative flex aspect-video w-full cursor-pointer items-center justify-center rounded-md border border-dashed border-[#0000003b]"
             >
               <div className="flex flex-col items-center justify-center gap-2 text-[#0000003b]">
-                <PhotoIcon className="h-12 w-12 text-[#0000003b]" />
+                <PhotoIcon className="size-12 text-[#0000003b]" />
                 <span className="font-semibold">選擇封面圖片</span>
               </div>
             </Box>
@@ -280,7 +276,7 @@ const Editor: React.FC<EditorProps> = ({ mode, article }) => {
           <input
             type="file"
             accept="image/*"
-            id="cover-image-input"
+            ref={coverImageRef}
             hidden
             onChange={handleImageChange}
           />
@@ -321,9 +317,14 @@ const Editor: React.FC<EditorProps> = ({ mode, article }) => {
 
 export default Editor;
 
-function dataURLtoFile(dataUrl: string): File {
+function dataURLtoFile(dataUrl: string): File | null {
   const arr = dataUrl.split(",");
-  const mime = arr[0].match(/:(.*?);/)![1];
+
+  const mimeMatch = arr[0].match(/:(.*?);/);
+  if (!mimeMatch) {
+    return null;
+  }
+  const mime = mimeMatch[1];
   const bstr = atob(arr[1]);
   let n = bstr.length;
   const u8arr = new Uint8Array(n);

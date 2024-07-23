@@ -26,10 +26,10 @@ const MainHeader: React.FC = () => {
   };
 
   return (
-    <div className="w-full sticky top-0 flex p-2 py-1 bg-transparent border">
+    <div className="sticky top-0 flex w-full border bg-transparent p-2 py-1">
       <div className="ml-auto flex px-4">
         <IconButton color="inherit" disableRipple>
-          <BellIcon className="h-6 w-6" />
+          <BellIcon className="size-6" />
         </IconButton>
         {/* <IconButton edge="end" color="inherit" onClick={handleMenuOpen}>
           <Avatar src="/images/avatar.jpg" alt="User Avatar" />

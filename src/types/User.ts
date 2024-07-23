@@ -13,7 +13,6 @@ export interface Profile {
     selectedAvatarIndex: number;
     selectedTags: string[];
     intro?: string;
-    interestedTopics: string[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -25,7 +24,6 @@ export interface CreateUserData {
     selectedAvatarIndex: number;
     selectedTags: string[];
     intro?: string;
-    interestedTopics: string[];
 }
 
 export interface UpdateUserData {
@@ -35,6 +33,5 @@ export interface UpdateUserData {
         selectedAvatarIndex: number;
         selectedTags: string[];
         intro?: string;
-        interestedTopics: string[];
     };
 }

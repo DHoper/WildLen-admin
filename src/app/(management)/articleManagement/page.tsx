@@ -7,14 +7,14 @@ import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 
 const ArticlePage: React.FC = () => {
   return (
-    <Container maxWidth="lg" className="py-4 h-full flex flex-col">
-      <div className="flex justify-between items-end p-2 pb-4">
+    <Container maxWidth="lg" className="flex h-full flex-col py-4">
+      <div className="flex items-end justify-between p-2 pb-4">
         <Typography className="text-2xl font-semibold" gutterBottom>
-          文章管理
+          論壇文章管理
         </Typography>
         <Link href="/articleManagement/create">
           <Fab size="small" color="primary" aria-label="add">
-            <PlusIcon className="text-white w-8 h-8 hover:rotate-90 transition-all" />
+            <PlusIcon className="size-8 text-white transition-all hover:rotate-90" />
           </Fab>
         </Link>
       </div>

@@ -11,8 +11,8 @@ export interface CommunityPost {
     views: number;
     isEdit: boolean;
     images: Image[];
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     author: User;
     comments: Comment[];
 }
@@ -23,8 +23,8 @@ export interface Comment {
     authorId: number;
     content: string;
     likes: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     author: User;
 }
 
