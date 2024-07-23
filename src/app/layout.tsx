@@ -9,7 +9,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "WildlenERP",
-  description: "Wildlen ERP System"
+  description: "Wildlen ERP System",
+  icons: {
+    icon: "/images/deerIcon.png", 
+  },
 };
 
 export default function RootLayout({
