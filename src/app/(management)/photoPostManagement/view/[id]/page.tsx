@@ -62,6 +62,8 @@ const PhotoPostViewPage = ({ params }: { params: { id: string } }) => {
     }
   }, [id]);
 
+  const secureUrl = (url: string) => url.replace(/^http:\/\//i, "https://");
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setTabValue(newValue);
   };
@@ -188,7 +190,7 @@ const PhotoPostViewPage = ({ params }: { params: { id: string } }) => {
                     <Grid item xs={12} sm={6} md={4} key={image.id}>
                       <Box sx={{ overflow: "hidden", borderRadius: 2 }}>
                         <Image
-                          src={image.url}
+                          src={secureUrl(image.url)}
                           alt={image.publicId}
                           width={400}
                           height={300}
