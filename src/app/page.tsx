@@ -1,6 +1,5 @@
-// pages/about.js
+import { redirect } from "next/navigation";
 
-
-export default function AboutPage() {
-  return <div className="h-screen w-screen"></div>;
+export default async function Home() {
+  redirect("/articleManagement");
 }
