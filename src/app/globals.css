@@ -17,6 +17,16 @@
 }
 
 body {
+  color: #000 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #000 !important;
+  }
+}
+
+body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
