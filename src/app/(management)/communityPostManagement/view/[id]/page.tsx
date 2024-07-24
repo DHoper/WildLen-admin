@@ -219,7 +219,7 @@ const CommunityPostViewPage = ({ params }: { params: { id: string } }) => {
                 </div>
               </TabPanel>
               <TabPanel value="comments">
-                <div className="space-y-4">
+                {/* <div className="space-y-4">
                   {communityPost.comments.map((comment) => (
                     <Box key={comment.id}>
                       <Typography variant="body2" color="textSecondary">
@@ -229,7 +229,7 @@ const CommunityPostViewPage = ({ params }: { params: { id: string } }) => {
                       <Divider className="my-2" />
                     </Box>
                   ))}
-                </div>
+                </div> */}
               </TabPanel>
             </TabContext>
             <Divider sx={{ my: 2 }} />
